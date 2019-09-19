@@ -82,7 +82,7 @@ class SubnetCalc:
     def calc_hosts(self):
         self.zeros = self.sub2bin().count("0")
         self.ones = 32 - self.zeros
-        self.hosts = abs(2 ** self.zeros - 2)
+        self.hosts = abs(pow(2, self.zeros) - 2)
         return self
 
 
