@@ -16,12 +16,9 @@ class SubnetCalc:
         self.mask = mask
 
     def ip_validate(self):
-        # Split each octets into array
-        octets = self.ip.split(".")
-
-        # Iterate through octets, and assign variable for easier compile.
+        # Iterate through octets, split by [.], and assign variable for easier access.
         # First it check if the first octet is a private or loopback address, and so on.
-        int_octet_ip = [int(i) for i in octets]
+        int_octet_ip = [int(i) for i in self.ip.split(".")]
         if (len(int_octet_ip) == 4) and \
                 (int_octet_ip[0] != 127) and \
                 (int_octet_ip[0] != 169) and \
@@ -49,7 +46,7 @@ class SubnetCalc:
     def ip2bin(self):
         bin_arr = []
         # Convert each IP Octet to Binary
-        oct2bin = [bin(i) for i in self.ip_validate()]
+        oct2bin = [bin(i).split("b")[1] for i in self.ip_validate()]
         for i in range(0, len(oct2bin)):
             # make each binary octet of 8 bit length by padding zeros
             if len(oct2bin[i]) < 8:
@@ -59,6 +56,20 @@ class SubnetCalc:
                 bin_arr.append(oct2bin[i])
         return bin_arr
 
+    def sub2bin(self):
+        sub_bin_arr = []
+        # Convert each IP Octet to Binary
+        oct2bin = [bin(i).split("b")[1] for i in self.sub_validate()]
+        for i in range(0, len(oct2bin)):
+            # make each binary octet of 8 bit length by padding zeros
+            if len(oct2bin[i]) < 8:
+                pad = oct2bin[i].zfill(8)
+                sub_bin_arr.append(pad)
+            else:
+                sub_bin_arr.append(oct2bin[i])
+        sub_bin_mask = "".join(sub_bin_arr)
+        return sub_bin_mask
+
 
 # False since it's a loopback, and mask first octet is invalid
 x = SubnetCalc("127.0.0.1", "255.255.255.240")
@@ -66,4 +77,4 @@ x = SubnetCalc("127.0.0.1", "255.255.255.240")
 # True
 y = SubnetCalc("172.16.5.11", "255.255.255.240")
 
-print(y.ip2bin())
+print(y.sub2bin())
