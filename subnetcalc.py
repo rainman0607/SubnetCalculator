@@ -14,6 +14,15 @@ class SubnetCalc:
     def __init__(self, ip, mask):
         self.ip = ip
         self.mask = mask
+        self.zeros = None
+        self.hosts = None
+        self.ones = None
+
+        self.ip_validate()
+        self.sub_validate()
+        self.ip2bin()
+        self.sub2bin()
+        self.calc_hosts()
 
     def ip_validate(self):
         # Iterate through octets, split by [.], and assign variable for easier access.
@@ -70,11 +79,17 @@ class SubnetCalc:
         sub_bin_mask = "".join(sub_bin_arr)
         return sub_bin_mask
 
+    def calc_hosts(self):
+        self.zeros = self.sub2bin().count("0")
+        self.ones = 32 - self.zeros
+        self.hosts = abs(2 ** self.zeros - 2)
+        return self
+
 
 # False since it's a loopback, and mask first octet is invalid
-x = SubnetCalc("127.0.0.1", "255.255.255.240")
+#x = SubnetCalc("127.0.0.1", "255.255.255.240")
 
 # True
 y = SubnetCalc("172.16.5.11", "255.255.255.240")
 
-print(y.sub2bin())
+print(y.hosts)
