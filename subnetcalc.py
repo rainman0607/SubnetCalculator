@@ -23,6 +23,7 @@ class SubnetCalc:
         self.ip2bin()
         self.sub2bin()
         self.calc_hosts()
+        self.calc_wild_masks()
 
     def ip_validate(self):
         # Iterate through octets, split by [.], and assign variable for easier access.
@@ -38,7 +39,7 @@ class SubnetCalc:
         else:
             return False
 
-    def sub_validate(self):
+    def sub_validate(self): # kan nok godt optimeres
         oct_masks = [0, 128, 192, 224, 240, 248, 252, 254, 255]
 
         octet_subnet = [int(j) for j in self.mask.split(".")]
@@ -85,11 +86,20 @@ class SubnetCalc:
         self.hosts = abs(pow(2, self.zeros) - 2)
         return self
 
+    def calc_wild_masks(self):
+        wild_masks_arr = []
+        for i in self.sub_validate():
+            # wb = wild bit, not write byte
+            wb = int(255 - i)
+            wild_masks_arr.append(wb)
+        wildcard = ".".join([str(i) for i in wild_masks_arr])
+        return wildcard
+
 
 # False since it's a loopback, and mask first octet is invalid
-#x = SubnetCalc("127.0.0.1", "255.255.255.240")
+# x = SubnetCalc("127.0.0.1", "255.255.255.240")
 
 # True
 y = SubnetCalc("172.16.5.11", "255.255.255.240")
 
-print(y.hosts)
+print(y.calc_wild_masks())
